@@ -31,7 +31,6 @@ import os
 import argparse
 import bbox_writer
 import tensorflow as tf
-from object_detection.utils import dataset_util
 
 description_text = """\
 Use this script to convert labeled images into TFRecord files for training.
@@ -112,21 +111,21 @@ def create_tf_example(labels, txt_full_path):
     class_ids = [labels[cls] for cls in classes]
 
     tf_example = tf.train.Example(features=tf.train.Features(feature={
-        'image/height': dataset_util.int64_feature(height),
-        'image/width': dataset_util.int64_feature(width),
-        'image/channels': dataset_util.int64_feature(channels),
-        'image/colorspace': dataset_util.bytes_feature("RGB".encode('utf-8')),
-        'image/filename': dataset_util.bytes_feature(filename.encode('utf-8')),
-        'image/source_id': dataset_util.bytes_feature(filename.encode('utf-8')),
-        'image/image_key': dataset_util.bytes_feature(filename.encode('utf-8')),
-        'image/encoded': dataset_util.bytes_feature(encoded_image_data),
-        'image/format': dataset_util.bytes_feature(image_fmt.encode('utf-8')),
-        'image/object/bbox/xmin': dataset_util.float_list_feature(xmins),
-        'image/object/bbox/xmax': dataset_util.float_list_feature(xmaxs),
-        'image/object/bbox/ymin': dataset_util.float_list_feature(ymins),
-        'image/object/bbox/ymax': dataset_util.float_list_feature(ymaxs),
-        'image/object/class/text': dataset_util.bytes_list_feature(classes_txt),
-        'image/object/class/label': dataset_util.int64_list_feature(class_ids),
+        'image/height': int64_feature(height),
+        'image/width': int64_feature(width),
+        'image/channels': int64_feature(channels),
+        'image/colorspace': bytes_feature("RGB".encode('utf-8')),
+        'image/filename': bytes_feature(filename.encode('utf-8')),
+        'image/source_id': bytes_feature(filename.encode('utf-8')),
+        'image/image_key': bytes_feature(filename.encode('utf-8')),
+        'image/encoded': bytes_feature(encoded_image_data),
+        'image/format': bytes_feature(image_fmt.encode('utf-8')),
+        'image/object/bbox/xmin': float_list_feature(xmins),
+        'image/object/bbox/xmax': float_list_feature(xmaxs),
+        'image/object/bbox/ymin': float_list_feature(ymins),
+        'image/object/bbox/ymax': float_list_feature(ymaxs),
+        'image/object/class/text': bytes_list_feature(classes_txt),
+        'image/object/class/label': int64_list_feature(class_ids),
     }))
 
     is_negative = len(rects) == 0
@@ -138,7 +137,7 @@ def write_record_from_list(id, labels, data, out_path):
 
     examples_count = collections.Counter()
     negative_count = 0
-    with tf.python_io.TFRecordWriter(out_path) as writer:
+    with tf.io.TFRecordWriter(out_path) as writer:
         for filename in data:
             print("[%s] Writing record for" % id, filename)
             example, count, is_negative = create_tf_example(labels, filename)
@@ -273,6 +272,26 @@ def get_record_writing_tasks():
     return tasks, labels
 
 
+def int64_feature(value):
+  return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
+
+
+def int64_list_feature(value):
+  return tf.train.Feature(int64_list=tf.train.Int64List(value=value))
+
+
+def bytes_feature(value):
+  return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
+
+
+def bytes_list_feature(value):
+  return tf.train.Feature(bytes_list=tf.train.BytesList(value=value))
+
+
+def float_list_feature(value):
+  return tf.train.Feature(float_list=tf.train.FloatList(value=value))
+
+
 if __name__ == "__main__":
     t_start = time.time()
 
@@ -293,3 +312,4 @@ if __name__ == "__main__":
 
     t_end = time.time()
     print("Took %5.2fs to write records" % (t_end - t_start))
+
