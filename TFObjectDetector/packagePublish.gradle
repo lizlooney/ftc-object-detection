@@ -68,9 +68,9 @@ afterEvaluate {
                 // Self-explanatory metadata for the most part
                 pom {
                     name = modulePublishName
-                    description = 'FTC SDK'
+                    description = 'TensorFlow Object Detector for FTC'
                     // If your project has a dedicated site, use its URL here
-                    url = 'https://github.com/FIRST-Tech-Challenge/FtcRobotController'
+                    url = 'https://github.com/FIRST-Tech-Challenge/ftc-object-detection'
                     licenses {
                         license {
                             name = '3-Clause BSD'
@@ -88,9 +88,9 @@ afterEvaluate {
                     }
                     // Version control info, if you're using GitHub, follow the format as seen here
                     scm {
-                        connection = 'scm:git:github.com/FIRST-Tech-Challenge/FtcRobotController.git'
-                        developerConnection = 'scm:git:ssh://github.com/OpenFTC/Extracted-RC.git'
-                        url = 'https://github.com/FIRST-Tech-Challenge/FtcRobotController/tree/master'
+                        connection = 'scm:git:github.com/FIRST-Tech-Challenge/ftc-object-detection.git'
+                        developerConnection = 'scm:git:ssh://github.com/OpenFTC/ftc-object-detection.git'
+                        url = 'https://github.com/FIRST-Tech-Challenge/ftc-object-detection/tree/lib_for_ftc_sdk'
                     }
                 }
             }
